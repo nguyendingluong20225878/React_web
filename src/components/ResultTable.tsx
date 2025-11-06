@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
 
-// ResultTable.tsx
-// Hiển thị danh sách người dùng + chức năng xóa
+
+// Hiển thị danh sách người dùng + chức năng xóa (có dialog xác nhận)
+
 interface User {
   id: number;
   name: string;
@@ -28,6 +29,18 @@ const ResultTable: React.FC<Props> = ({ users = [], keyword, onDelete }) => {
         u.username.toLowerCase().includes(kwLower)
     );
   }, [users, keyword]);
+
+ 
+  // Hàm xử lý khi bấm nút "Xóa"
+  const handleDeleteClick = (id: number, name: string) => {
+    // Hiển thị dialog xác nhận
+    const confirmDelete = window.confirm(
+      `⚠️ Bạn có chắc chắn muốn xóa người dùng "${name}" không?`
+    );
+    if (confirmDelete) {
+      onDelete(id); // Gọi hàm xóa nếu xác nhận OK
+    }
+  };
 
   return (
     <div className="table-wrap">
@@ -67,6 +80,7 @@ const ResultTable: React.FC<Props> = ({ users = [], keyword, onDelete }) => {
                      Sửa
                   </button>
 
+                  {/* Nút Xóa màu đỏ có dialog xác nhận */}
                   <button
                     className="action-btn delete"
                     style={{
@@ -74,7 +88,7 @@ const ResultTable: React.FC<Props> = ({ users = [], keyword, onDelete }) => {
                       color: "white",
                       border: "none",
                     }}
-                    onClick={() => onDelete(u.id)}
+                    onClick={() => handleDeleteClick(u.id, u.name)}
                   >
                      Xóa
                   </button>
